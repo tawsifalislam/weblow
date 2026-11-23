@@ -703,16 +703,45 @@
             });
           }, { threshold: 0.5, rootMargin: "0px 0px -20% 0px" });
           revealEls.forEach(function (n) { rio.observe(n); });
+          /* Trigger-zone test matching the observer exactly: at least half
+             of the element visible, and that visible part inside the root
+             zone (the viewport minus its bottom 20%). A block merely
+             peeking at the bottom edge fails this and stays hidden. */
+          function inTriggerZone(n) {
+            var r = n.getBoundingClientRect();
+            if (!r.height) return false;
+            var vis = Math.min(r.bottom, window.innerHeight * 0.8) - Math.max(r.top, 0);
+            return vis > 0 && vis / r.height >= 0.5;
+          }
           /* Safety net: rescue anything the observer may have missed that
-             is already at or above the viewport — below-fold blocks stay
+             is already inside the trigger zone — blocks below it stay
              hidden until they are scrolled to, so the reveal still plays. */
           setTimeout(function () {
             revealEls.forEach(function (n) {
-              if (!n.classList.contains("in") && n.getBoundingClientRect().top < window.innerHeight) {
+              if (!n.classList.contains("in") && inTriggerZone(n)) {
                 n.classList.add("in");
               }
             });
           }, 3500);
+          /* Bottom-of-page rescue: at maximum scroll the footer blocks sit
+             entirely below the observer's root bottom (80% of the viewport
+             height), so the observer can never fire for them. When the
+             reader reaches (or nearly reaches) the bottom of the page,
+             reveal everything still hidden — nothing may stay stuck
+             invisible at the end of the page. */
+          var bottomRescued = false;
+          function rescueAtBottom() {
+            if (bottomRescued) return;
+            var doc = document.documentElement;
+            var maxScroll = doc.scrollHeight - window.innerHeight;
+            if (maxScroll <= 0 || (window.pageYOffset || doc.scrollTop) >= maxScroll - 4) {
+              bottomRescued = true;
+              revealEls.forEach(function (n) { n.classList.add("in"); });
+              window.removeEventListener("scroll", rescueAtBottom);
+            }
+          }
+          window.addEventListener("scroll", rescueAtBottom, { passive: true });
+          rescueAtBottom();
         }
 
       })();
