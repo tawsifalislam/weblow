@@ -335,11 +335,14 @@
       html.js .reveal { opacity: 0; transform: translateX(-90px); transition: opacity 2s cubic-bezier(.22, 1, .36, 1), transform 2s cubic-bezier(.22, 1, .36, 1); }
       html.js .reveal.in { opacity: 1; transform: none; }
 
-      /* Reduced motion: entrance animations off, nothing hidden */
+      /* Reduced motion: smooth scrolling is switched off, but the entrance
+         animations themselves still play. The site owner explicitly wants
+         the greeting and the scroll-reveal slide to run on every phone —
+         including phones with "Remove animations" / Reduce Motion turned
+         on, which is common on mobile and silently flattened the reveal
+         there — so no rule here may hide, skip or flatten them. */
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .greeting { animation: none !important; }
-        html.js .reveal { opacity: 1; transform: none; transition: none; }
         .btn { transition: none; }
       }
     </style>
@@ -661,8 +664,6 @@
     </style>
     <script>
       (function () {
-        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
         /* ---------- Header hamburger menu ---------- */
         var menuBtn = document.getElementById("menuBtn");
         var headMenu = document.getElementById("headMenu");
@@ -682,9 +683,13 @@
           document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
         }
 
-        /* ---------- Scroll-reveal for sections and cards ---------- */
+        /* ---------- Scroll-reveal for sections and cards ----------
+           The reveal deliberately runs regardless of the phone's
+           prefers-reduced-motion setting: the owner wants the slide on
+           mobile too, and that setting (on many phones) used to force
+           every block visible instantly here, with no animation at all. */
         var revealEls = document.querySelectorAll(".reveal");
-        if (reduceMotion || !("IntersectionObserver" in window)) {
+        if (!("IntersectionObserver" in window)) {
           revealEls.forEach(function (n) { n.classList.add("in"); });
         } else {
           revealEls.forEach(function (n) {
@@ -723,6 +728,31 @@
               }
             });
           }, 3500);
+          /* Scroll backup with the same strict zone test: on phones the
+             observer can miss a block that has been scrolled into the
+             trigger zone — tall cards on a short screen, in-app browsers —
+             so re-run the zone test as the page scrolls and on resize, and
+             reveal anything that qualifies. The test is identical to the
+             safety net's, so a block below the zone is never revealed
+             early; it still slides in only once it is scrolled to. */
+          var zoneCheckQueued = false;
+          function zoneCheck() {
+            zoneCheckQueued = false;
+            revealEls.forEach(function (n) {
+              if (!n.classList.contains("in") && inTriggerZone(n)) {
+                n.classList.add("in");
+                rio.unobserve(n);
+              }
+            });
+          }
+          function queueZoneCheck() {
+            if (zoneCheckQueued) return;
+            zoneCheckQueued = true;
+            if (window.requestAnimationFrame) { window.requestAnimationFrame(zoneCheck); }
+            else { zoneCheck(); }
+          }
+          window.addEventListener("scroll", queueZoneCheck, { passive: true });
+          window.addEventListener("resize", queueZoneCheck);
           /* Bottom-of-page rescue: at maximum scroll the footer blocks sit
              entirely below the observer's root bottom (80% of the viewport
              height), so the observer can never fire for them. When the
