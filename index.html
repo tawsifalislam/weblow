@@ -372,31 +372,46 @@
         .arch-hero-content { max-width: 660px; }
       }
       @media (max-width: 760px) {
+        /* Mobile: text stays ON the hero image (full-bleed overlay, like desktop),
+           with a stronger light veil so the dark text stays readable. */
         .arch-hero {
-          display: flex;
-          flex-direction: column;
-          min-height: 0;
-          overflow: visible;
-          background: var(--ah-surface);
-        }
-        .arch-hero-content {
-          order: 1;
-          max-width: 100%;
-          padding: 92px 22px 36px;
+          display: block;
+          min-height: 100vh;
+          min-height: 100svh;
+          overflow: hidden;
+          background: #e9f2ec;
         }
         .arch-hero-media {
-          order: 2;
-          position: relative;
-          inset: auto;
-          height: clamp(280px, 52vw, 380px);
-          margin: 4px 16px 20px;
-          border-radius: 20px;
+          position: absolute;
+          inset: 0;
+          height: auto;
+          margin: 0;
+          border-radius: 0;
           overflow: hidden;
-          box-shadow: var(--ah-shadow-card);
+          box-shadow: none;
         }
-        .arch-hero-media img { object-position: 62% 50%; }
-        .arch-hero-shade { display: none; }
-        .arch-talk-btn {
+        .arch-hero-media img { object-position: 70% 50%; }
+        .arch-hero-shade {
+          display: block;
+          background:
+            linear-gradient(
+              90deg,
+              rgba(246, 250, 247, 0.95) 0%,
+              rgba(246, 250, 247, 0.86) 45%,
+              rgba(246, 250, 247, 0.55) 75%,
+              rgba(246, 250, 247, 0.35) 100%
+            ),
+            linear-gradient(
+              0deg,
+              rgba(246, 250, 247, 0.9) 0%,
+              rgba(246, 250, 247, 0.55) 40%,
+              rgba(246, 250, 247, 0.78) 100%
+            );
+        }
+        .arch-hero-content {
+          max-width: 100%;
+          padding: 96px 22px 44px;
+        }
           top: 16px;
           right: 16px;
           min-height: 44px;
