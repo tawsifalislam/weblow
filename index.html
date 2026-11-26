@@ -372,12 +372,15 @@
         .arch-hero-content { max-width: 660px; }
       }
       @media (max-width: 760px) {
-        /* Mobile: text stays ON the hero image (full-bleed overlay, like desktop),
-           with a stronger light veil so the dark text stays readable. */
+        /* Mobile: the WHOLE photo is the hero, at its own 16:9 size —
+           never cropped (owner 2026-11-26). The hero is exactly the
+           photo's shape; the text sits inside it, compact, and animates
+           in with GSAP like desktop. */
         .arch-hero {
-          display: block;
-          min-height: 100vh;
-          min-height: 100svh;
+          display: flex;
+          align-items: center;
+          min-height: 0;
+          aspect-ratio: 16 / 9;
           overflow: hidden;
           background: #e9f2ec;
         }
@@ -390,7 +393,7 @@
           overflow: hidden;
           box-shadow: none;
         }
-        .arch-hero-media img { object-position: 70% 50%; }
+        .arch-hero-media img { object-position: 50% 50%; }
         .arch-hero-shade {
           display: block;
           background:
@@ -409,26 +412,41 @@
             );
         }
         .arch-hero-content {
+          width: 100%;
           max-width: 100%;
-          padding: 96px 22px 44px;
+          padding: 2vw 4vw;
+        }
+        .arch-eyebrow {
+          padding: 1.2vw 2.5vw 1.2vw 2vw;
+          gap: 1.5vw;
+          font-size: 2.6vw;
+          letter-spacing: 0.14em;
+        }
+        .arch-eyebrow::before {
+          width: 1.6vw;
+          height: 1.6vw;
+          box-shadow: 0 0 0 1vw var(--ah-green-soft);
         }
         .arch-talk-btn {
-          top: 16px;
-          right: 16px;
-          min-height: 44px;
-          padding: 10px 18px;
-          font-size: 0.9rem;
+          top: 2.5vw;
+          right: 3vw;
+          min-height: 7.5vw;
+          padding: 1.8vw 3.2vw;
+          font-size: 3.1vw;
+          gap: 1.8vw;
         }
-        .arch-hero h1 { font-size: clamp(2.35rem, 11vw, 3.1rem); margin-top: 20px; }
-        .arch-lede { margin-top: 18px; }
-        .arch-cta-row { margin-top: 28px; }
-        .arch-btn { flex: 1 1 auto; padding: 15px 20px; }
+        .arch-hero h1 { font-size: 5.8vw; line-height: 1.08; margin-top: 1.2vw; }
+        .arch-lede { margin-top: 1.2vw; font-size: 2.8vw; line-height: 1.4; max-width: 94%; }
+        .arch-cta-row { margin-top: 1.8vw; gap: 2vw; flex-wrap: nowrap; }
+        .arch-btn { flex: 0 1 auto; min-height: 7.5vw; padding: 1.8vw 3vw; font-size: 3vw; gap: 1.8vw; white-space: nowrap; }
+        .arch-play-badge { width: 4.6vw; height: 4.6vw; }
+        .arch-play-badge svg { width: 2.2vw; height: 2.2vw; margin-left: 0.5vw; }
         .arch-hero .arch-stats {
-          margin-top: 38px;
-          padding-top: 24px;
+          margin-top: 1.8vw;
+          padding-top: 1.8vw;
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 14px;
+          gap: 2vw;
           max-width: 100%;
         }
         .arch-stat {
@@ -436,21 +454,18 @@
           margin: 0;
           border-right: 0;
         }
-        .arch-stat + .arch-stat { border-left: 1px solid var(--ah-line); padding-left: 14px; }
-        .arch-stat-num { font-size: 1.55rem; }
-        .arch-stat-label { font-size: 0.76rem; line-height: 1.4; }
+        .arch-stat + .arch-stat { border-left: 1px solid var(--ah-line); padding-left: 2vw; }
+        .arch-stat-num { font-size: 4vw; }
+        .arch-stat-label { font-size: 2.4vw; line-height: 1.3; margin-top: 0.5vw; }
       }
       @media (max-width: 380px) {
         .arch-stats { grid-template-columns: 1fr 1fr; }
         .arch-stat + .arch-stat { border-left: 0; padding-left: 0; }
       }
-      @media (prefers-reduced-motion: reduce) {
-        .arch-hero *, .arch-hero *::before, .arch-hero *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
+      /* NOTE: no prefers-reduced-motion gate on the hero — the owner
+         wants the hero text animated on his phone, which has "Remove
+         animations" on (2026-11-26). The entrance is GSAP (JS), and the
+         scroll-reveal already runs regardless of that setting. */
 
       /* ---------- Sections ---------- */
       .sec-head { max-width: 640px; margin-bottom: 44px; }
@@ -977,9 +992,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
       (function () {
-        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        // Respect reduced motion (and no-GSAP fallback): leave final state as authored.
-        if (reduceMotion || typeof window.gsap === "undefined") return;
+        // The hero entrance always plays — even when the phone has
+        // "Remove animations" on (owner 2026-11-26: the texts must
+        // animate on his phone). Only a missing GSAP library skips it,
+        // leaving the final state as authored.
+        if (typeof window.gsap === "undefined") return;
         var easeOut = "power3.out";
         gsap.from("#heroImg", { scale: 1.06, duration: 1.6, ease: "power2.out" });
         var tl = gsap.timeline({ defaults: { ease: easeOut } });
