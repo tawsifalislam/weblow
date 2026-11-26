@@ -260,7 +260,8 @@
       }
       .arch-hero h1 .precision {
         display: inline-block;
-        color: var(--ah-green);
+        /* Brand main colour (owner 2026-11-26) — deep teal, not green. */
+        color: #013C38;
       }
       .arch-lede {
         margin: 24px 0 0;
@@ -291,6 +292,15 @@
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, background 0.35s ease, border-color 0.35s ease;
       }
       .arch-btn .arrow { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+      /* While the GSAP entrance runs, the buttons must NOT have a CSS
+         transform transition — it fights GSAP's transform and makes the
+         buttons slide in twice (owner 2026-11-26). The class is added
+         before the timeline and removed on its complete; hover keeps
+         its smooth lift afterwards. */
+      .arch-hero.is-animating .arch-btn,
+      .arch-hero.is-animating .arch-talk-btn {
+        transition: box-shadow 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+      }
       .arch-btn-primary {
         background: var(--ah-green);
         color: #fff;
@@ -357,6 +367,83 @@
         color: var(--ah-muted-2);
         letter-spacing: 0.02em;
       }
+      /* ---------- Hero services bar + floating "Innovative Design" card ----------
+         (owner 2026-11-26: these texts from the reference design also live
+         in the hero; the bar is what makes the hero taller.) */
+      .arch-hero-services {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 28px;
+        margin: 36px clamp(22px, 6vw, 88px) 48px;
+        padding: 28px 30px;
+        border-radius: 20px;
+        background: #101820;
+        box-shadow: 0 24px 60px -24px rgba(16, 24, 32, 0.45);
+      }
+      .arch-service svg {
+        width: 30px;
+        height: 30px;
+        color: var(--ah-green);
+      }
+      .arch-service h3 {
+        margin: 14px 0 0;
+        font-size: 1.02rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.01em;
+      }
+      .arch-service p {
+        margin: 8px 0 0;
+        font-size: 0.86rem;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.62);
+      }
+      .arch-hero-card {
+        position: absolute;
+        z-index: 3;
+        right: clamp(22px, 6vw, 88px);
+        bottom: 340px;
+        width: 236px;
+        padding: 20px 20px 22px;
+        border-radius: 16px;
+        background: rgba(16, 24, 32, 0.82);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 20px 44px -18px rgba(16, 24, 32, 0.55);
+        color: #fff;
+      }
+      .arch-hero-card h3 {
+        margin: 0;
+        font-size: 1.02rem;
+        font-weight: 700;
+      }
+      .arch-hero-card p {
+        margin: 8px 0 0;
+        font-size: 0.85rem;
+        line-height: 1.55;
+        color: rgba(255, 255, 255, 0.68);
+      }
+      .arch-card-plus {
+        position: absolute;
+        left: 50%;
+        bottom: -18px;
+        transform: translateX(-50%);
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 50%;
+        background: var(--ah-green);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 10px 22px -8px rgba(32, 168, 74, 0.7);
+        transition: transform 0.3s ease, background 0.3s ease;
+      }
+      .arch-card-plus:hover { background: var(--ah-green-dark); transform: translateX(-50%) scale(1.08); }
+      .arch-card-plus svg { width: 18px; height: 18px; }
       @media (max-width: 1024px) {
         .arch-hero-media img { object-position: 72% 50%; }
         .arch-hero-shade {
@@ -371,31 +458,48 @@
         }
         .arch-hero-content { max-width: 660px; }
       }
+      @media (max-width: 1100px) {
+        /* Narrower desktops/tablets: the floating card would cover the
+           stats, so it sits in the flow instead (still inside the hero). */
+        .arch-hero-card {
+          position: relative;
+          right: auto;
+          bottom: auto;
+          width: auto;
+          max-width: 420px;
+          margin: 28px clamp(22px, 6vw, 88px) 0;
+        }
+      }
       @media (max-width: 760px) {
-        /* Mobile: the WHOLE photo is the hero, at its own 16:9 size —
-           never cropped (owner 2026-11-26). The hero is exactly the
-           photo's shape; the text sits inside it, compact, and animates
-           in with GSAP like desktop. */
+        /* Mobile: the photo stays a full 16:9 band (never cropped), and
+           the hero grows taller below it (owner 2026-11-26) to hold the
+           "Innovative Design" card + the 4-service dark bar. */
         .arch-hero {
-          display: flex;
-          align-items: center;
+          display: block;
           min-height: 0;
-          aspect-ratio: 16 / 9;
+          aspect-ratio: auto;
           overflow: hidden;
           background: #e9f2ec;
+          /* No section padding here — the site-wide `section` padding
+             (76px) pushed the photo band below the text/shade and
+             misaligned them (owner fix 2026-11-26). */
+          padding: 0;
         }
         .arch-hero-media {
-          position: absolute;
-          inset: 0;
+          position: relative;
+          inset: auto;
           height: auto;
           margin: 0;
           border-radius: 0;
           overflow: hidden;
           box-shadow: none;
+          aspect-ratio: 16 / 9;
         }
         .arch-hero-media img { object-position: 50% 50%; }
         .arch-hero-shade {
           display: block;
+          inset: 0 0 auto 0;
+          aspect-ratio: 16 / 9;
           /* Lighter veil (owner 2026-11-26): the photo was washed out —
              it now shows through clearly while the dark text stays readable. */
           background:
@@ -414,6 +518,14 @@
             );
         }
         .arch-hero-content {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          aspect-ratio: 16 / 9;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
           width: 100%;
           max-width: 100%;
           padding: 2vw 4vw;
@@ -459,6 +571,27 @@
         .arch-stat + .arch-stat { border-left: 1px solid var(--ah-line); padding-left: 2vw; }
         .arch-stat-num { font-size: 4vw; }
         .arch-stat-label { font-size: 2.4vw; line-height: 1.3; margin-top: 0.5vw; }
+        .arch-hero-card {
+          position: relative;
+          right: auto;
+          bottom: auto;
+          width: auto;
+          max-width: none;
+          margin: 16px 4vw 24px;
+          padding: 16px 18px 18px;
+        }
+        .arch-hero-card h3 { font-size: 0.95rem; }
+        .arch-hero-card p { font-size: 0.78rem; }
+        .arch-hero-services {
+          grid-template-columns: 1fr 1fr;
+          gap: 18px 14px;
+          margin: 0 4vw 20px;
+          padding: 18px;
+          border-radius: 16px;
+        }
+        .arch-service svg { width: 24px; height: 24px; }
+        .arch-service h3 { font-size: 0.86rem; margin-top: 10px; }
+        .arch-service p { font-size: 0.72rem; line-height: 1.5; margin-top: 5px; }
       }
       @media (max-width: 380px) {
         .arch-stats { grid-template-columns: 1fr 1fr; }
@@ -704,6 +837,33 @@
               <div class="arch-stat-label">Awards Won</div>
             </li>
           </ul>
+        </div>
+        <aside class="arch-hero-card" id="heroCard" aria-label="Innovative Design">
+          <h3>Innovative Design</h3>
+          <p>Creating spaces that inspire and elevate everyday living.</p>
+          <button class="arch-card-plus" type="button" aria-label="More about Innovative Design"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+        </aside>
+        <div class="arch-hero-services" id="heroServices" aria-label="Design services">
+          <div class="arch-service">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 9l9-6 9 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v11M8.5 9v11M15.5 9v11M20 9v11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M2 21h20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <h3>Architectural Design</h3>
+            <p>Smart, functional and sustainable design solutions.</p>
+          </div>
+          <div class="arch-service">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 11a2 2 0 0 1 4 0v1h8v-1a2 2 0 0 1 4 0v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 21v-3M17 21v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <h3>Interior Design</h3>
+            <p>Beautiful interiors that reflect your lifestyle.</p>
+          </div>
+          <div class="arch-service">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 12l3-3 2 2 3-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <h3>Project Planning</h3>
+            <p>From concept to completion we&rsquo;ve got you covered.</p>
+          </div>
+          <div class="arch-service">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12l9-5M12 12v10M12 12L3 7" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            <h3>3D Visualization</h3>
+            <p>Bringing your ideas to life before they are built.</p>
+          </div>
         </div>
       </section>
 
@@ -1007,8 +1167,9 @@
         var slideX = isMobile ? -12 : -64;
         var precX = isMobile ? -12 : -22;
         var ctaX = isMobile ? -12 : -36;
+        document.querySelector(".arch-hero").classList.add("is-animating");
         gsap.from("#heroImg", { scale: 1.06, duration: 2.2, ease: "power2.out" });
-        var tl = gsap.timeline({ defaults: { ease: easeOut } });
+        var tl = gsap.timeline({ defaults: { ease: easeOut }, onComplete: function () { document.querySelector(".arch-hero").classList.remove("is-animating"); } });
         tl.from("#talkBtn", { y: -26, autoAlpha: 0, duration: 1.0, clearProps: "transform" }, 0.2)
           .from("#heroLabel", { y: 16, autoAlpha: 0, duration: 1.0 }, 0.35)
           .from('[data-anim="line1"]', { x: slideX, autoAlpha: 0, duration: 1.3, clearProps: "transform" }, 0.55)
@@ -1016,7 +1177,9 @@
           .from("#precisionWord", { x: precX, autoAlpha: 0, duration: 1.15, clearProps: "transform" }, 1.1)
           .from("#heroDesc", { y: 22, autoAlpha: 0, duration: 1.15 }, 1.35)
           .from('[data-anim="cta"]', { x: ctaX, autoAlpha: 0, duration: 1.1, stagger: 0.2, clearProps: "transform" }, 1.6)
-          .from('[data-anim="stat"]', { y: 26, autoAlpha: 0, duration: 1.15, stagger: 0.2 }, 1.9);
+          .from('[data-anim="stat"]', { y: 26, autoAlpha: 0, duration: 1.15, stagger: 0.2 }, 1.9)
+          .from("#heroCard", { y: 20, autoAlpha: 0, duration: 1.15 }, 2.15)
+          .from("#heroServices", { y: 24, autoAlpha: 0, duration: 1.15 }, 2.35);
         document.querySelectorAll(".count").forEach(function (el, i) {
           var target = parseInt(el.getAttribute("data-target"), 10);
           var state = { value: 0 };
