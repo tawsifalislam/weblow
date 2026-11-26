@@ -724,7 +724,11 @@
       .bn-text { font-family: "Hind Siliguri", "Inter", sans-serif; }
       .svc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
       @media (max-width: 820px) { .svc-grid { grid-template-columns: 1fr; } }
-      .svc-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow); position: relative; -webkit-tap-highlight-color: transparent; }
+      /* Card gradient (owner 2026-11-27, from the image they sent):
+         diagonal teal → white → teal, sampled from the image:
+         #26DBC8 (top-left, the brand bright teal) → #BBF4EE →
+         #F8FEFE (white centre) → #CFF8F4 → #5CE5D5 (bottom-right). */
+      .svc-card { background: linear-gradient(135deg, #26DBC8 0%, #BBF4EE 25%, #F8FEFE 50%, #CFF8F4 75%, #5CE5D5 100%); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow); position: relative; -webkit-tap-highlight-color: transparent; }
       /* The reveal sets a 2s transition (opacity + transform); this keeps
          that for the entrance while giving the hover lift a fast .3s. */
       html.js .svc-card.reveal, html.js .svc-card.reveal.in {
