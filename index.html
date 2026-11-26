@@ -91,19 +91,40 @@
         border: none; outline: none; background: transparent; cursor: pointer;
         display: inline-flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 5px;
         padding-left: 10px;
-        transition: background .18s ease;
+        position: relative;
+        -webkit-tap-highlight-color: transparent;
       }
-      .menu-btn:hover, .menu-btn:focus-visible { background: rgba(38, 219, 200, .14); }
-      .menu-btn span { display: block; width: 20px; height: 2.5px; border-radius: 2px; background: var(--teal-accent); transition: transform .22s ease, opacity .18s ease, width .22s ease; }
+      .menu-btn span { display: block; width: 20px; height: 2px; border-radius: 2px; background: var(--teal-accent); transition: transform .22s ease, opacity .18s ease, width .22s ease; }
       /* Staggered (owner 2026-11-26): short on top, long at the bottom. */
       .menu-btn span:nth-child(1) { width: 8px; }
       .menu-btn span:nth-child(2) { width: 14px; }
       .menu-btn span:nth-child(3) { width: 20px; }
+      /* Hover: the stagger flips — long on top, short at the bottom.
+         Returns to the default stagger when the hover ends. */
+      .menu-btn:not(.open):hover span:nth-child(1) { width: 20px; }
+      .menu-btn:not(.open):hover span:nth-child(3) { width: 8px; }
       /* Open state: even widths so the X is symmetric. */
       .menu-btn.open span { width: 20px; }
-      .menu-btn.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+      .menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
       .menu-btn.open span:nth-child(2) { opacity: 0; }
-      .menu-btn.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+      .menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+      /* Tap animation, Luminaïze Soft Glow (owner 2026-11-26): the
+         button shrinks then grows back exactly ONCE (1 → 0.72 → 1,
+         .45s ease-out, no overshoot) while a soft teal glow circle
+         expands out and fades (.6s). CSS keyframes only — no Web
+         Animations API, no reduced-motion gate. No blue tap highlight
+         (-webkit-tap-highlight-color above) and no hover/focus
+         background rectangle. */
+      .menu-btn::after {
+        content: ""; position: absolute; left: 50%; top: 50%;
+        width: 44px; height: 44px; transform: translate(-50%, -50%) scale(.65);
+        border-radius: 50%; pointer-events: none; opacity: 0;
+        background: radial-gradient(circle, rgba(38, 219, 200, .35) 0%, rgba(38, 219, 200, .12) 45%, rgba(38, 219, 200, 0) 70%);
+      }
+      .menu-btn.tapped::after { animation: menu-glow .6s ease-out; }
+      @keyframes menu-glow { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.65); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); } }
+      .menu-btn.tapped { animation: menu-shrink-grow .45s ease-out; }
+      @keyframes menu-shrink-grow { 0% { transform: scale(1); } 35% { transform: scale(.72); } 100% { transform: scale(1); } }
       /* Dropdown navigation panel under the header bar */
       .head-menu {
         position: absolute; top: 100%; left: 0; right: 0;
@@ -1222,6 +1243,22 @@
             if (!headMenu.hidden && !e.target.closest(".site-head")) setMenu(false);
           });
           document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+        }
+
+        /* Tap animation, Luminaïze Soft Glow: the menu button shrinks
+           then grows back exactly ONCE per tap (with a soft glow).
+           A playing-lock ignores taps while the animation runs, so one
+           tap can never replay it 2-3 times. */
+        if (menuBtn) {
+          var tapUntil = 0, tapTimer = null;
+          menuBtn.addEventListener("click", function () {
+            var now = Date.now();
+            if (tapUntil > now) return;
+            tapUntil = now + 650;
+            menuBtn.classList.add("tapped");
+            if (tapTimer) clearTimeout(tapTimer);
+            tapTimer = setTimeout(function () { menuBtn.classList.remove("tapped"); }, 700);
+          });
         }
 
         /* ---------- Scroll-reveal for sections and cards ----------
