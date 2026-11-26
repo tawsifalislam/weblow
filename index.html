@@ -108,11 +108,12 @@
       .menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
       .menu-btn.open span:nth-child(2) { opacity: 0; }
       .menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-      /* Tap animation, Luminaïze Soft Glow (owner 2026-11-26): the
-         button shrinks then grows back exactly ONCE (1 → 0.72 → 1,
-         .45s ease-out, no overshoot) while a soft teal glow circle
-         expands out and fades (.6s). CSS keyframes only — no Web
-         Animations API, no reduced-motion gate. No blue tap highlight
+      /* Tap animation, Luminaïze Soft Glow (owner 2026-11-26, softened
+         2026-11-26: the shrink was too deep and too fast): the button
+         shrinks then grows back exactly ONCE (1 → 0.88 → 1, .6s smooth
+         ease, no overshoot) while a soft teal glow circle expands out
+         and fades (.8s). CSS keyframes only — no Web Animations API,
+         no reduced-motion gate. No blue tap highlight
          (-webkit-tap-highlight-color above) and no hover/focus
          background rectangle. */
       .menu-btn::after {
@@ -121,17 +122,18 @@
         border-radius: 50%; pointer-events: none; opacity: 0;
         background: radial-gradient(circle, rgba(38, 219, 200, .35) 0%, rgba(38, 219, 200, .12) 45%, rgba(38, 219, 200, 0) 70%);
       }
-      .menu-btn.tapped::after { animation: menu-glow .6s ease-out; }
+      .menu-btn.tapped::after { animation: menu-glow .8s cubic-bezier(0.22, 1, 0.36, 1); }
       @keyframes menu-glow { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.65); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); } }
-      .menu-btn.tapped { animation: menu-shrink-grow .45s ease-out; }
-      @keyframes menu-shrink-grow { 0% { transform: scale(1); } 35% { transform: scale(.72); } 100% { transform: scale(1); } }
+      .menu-btn.tapped { animation: menu-shrink-grow .6s cubic-bezier(0.22, 1, 0.36, 1); }
+      @keyframes menu-shrink-grow { 0% { transform: scale(1); } 40% { transform: scale(.88); } 100% { transform: scale(1); } }
 
       /* Shared Soft Glow tap animation (Luminaïze style, v33, owner
-         2026-11-26, demos 1/3/4/5/6): every item shrinks then grows back
-         exactly ONCE (1 → 0.72 → 1, .45s) while a soft teal glow expands
-         and fades (.6s). CSS keyframes only, no blue tap highlight. */
+         2026-11-26, demos 1/3/4/5/6; softened 2026-11-26): every item
+         shrinks then grows back exactly ONCE (1 → 0.88 → 1, .6s smooth
+         ease) while a soft teal glow expands and fades (.8s). CSS
+         keyframes only, no blue tap highlight. */
       @keyframes soft-glow { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.65); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); } }
-      @keyframes soft-shrink-grow { 0% { transform: scale(1); } 35% { transform: scale(.72); } 100% { transform: scale(1); } }
+      @keyframes soft-shrink-grow { 0% { transform: scale(1); } 40% { transform: scale(.88); } 100% { transform: scale(1); } }
       .arch-service::before, .arch-hero-card::before, .svc-card::before, .head-menu a::before, .arch-btn-ghost::before {
         content: ""; position: absolute; left: 50%; top: 50%;
         width: 44px; height: 44px; transform: translate(-50%, -50%) scale(.65);
@@ -140,8 +142,8 @@
       }
       /* The menu links are full-width rows; keep their glow near the text, not at the centre of the screen. */
       .head-menu a::before { left: 30px; }
-      .arch-service.tapped::before, .arch-hero-card.tapped::before, .svc-card.tapped::before, .head-menu a.tapped::before, .arch-btn-ghost.tapped::before { animation: soft-glow .6s ease-out; }
-      .arch-service.tapped, .arch-hero-card.tapped, .svc-card.tapped, .head-menu a.tapped, .arch-btn-ghost.tapped { animation: soft-shrink-grow .45s ease-out; }
+      .arch-service.tapped::before, .arch-hero-card.tapped::before, .svc-card.tapped::before, .head-menu a.tapped::before, .arch-btn-ghost.tapped::before { animation: soft-glow .8s cubic-bezier(0.22, 1, 0.36, 1); }
+      .arch-service.tapped, .arch-hero-card.tapped, .svc-card.tapped, .head-menu a.tapped, .arch-btn-ghost.tapped { animation: soft-shrink-grow .6s cubic-bezier(0.22, 1, 0.36, 1); }
       /* Dropdown navigation panel under the header bar */
       .head-menu {
         position: absolute; top: 100%; left: 0; right: 0;
@@ -1305,10 +1307,10 @@
           menuBtn.addEventListener("click", function () {
             var now = Date.now();
             if (tapUntil > now) return;
-            tapUntil = now + 650;
+            tapUntil = now + 850;
             menuBtn.classList.add("tapped");
             if (tapTimer) clearTimeout(tapTimer);
-            tapTimer = setTimeout(function () { menuBtn.classList.remove("tapped"); }, 700);
+            tapTimer = setTimeout(function () { menuBtn.classList.remove("tapped"); }, 900);
           });
         }
 
@@ -1325,10 +1327,10 @@
                 el.addEventListener("click", function () {
                   var now = Date.now();
                   if (until > now) return;
-                  until = now + 650;
+                  until = now + 850;
                   el.classList.add("tapped");
                   if (timer) clearTimeout(timer);
-                  timer = setTimeout(function () { el.classList.remove("tapped"); }, 700);
+                  timer = setTimeout(function () { el.classList.remove("tapped"); }, 900);
                 });
               })(els[i]);
             }
