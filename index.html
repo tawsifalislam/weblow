@@ -20,7 +20,7 @@
         --teal-accent-dark: #0B7A6E;
         --ink: #101613;
         --ink-soft: #43554F;
-        --bg: linear-gradient(135deg, #A5E9DC 0%, #D9F6F1 35%, #FFFFFF 55%, #BFEFE7 100%);
+        --bg: linear-gradient(135deg, #A5E9DC 0%, #D9F6F1 35%, #EBF2E3 55%, #BFEFE7 100%);
         --bg-alt: transparent;
         --card: #FFFFFF;
         --line: #DCE8E3;
@@ -40,6 +40,20 @@
          .section-alt is transparent so it shows through continuously. */
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
+      /* Whole-page glass (owner 2026-11-27): a fixed frosted layer over the
+         gradient, behind the content — the background reads as frosted
+         glass. The translucent tint softens the gradient and the blur +
+         saturate diffuse it; content above stays crisp. */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(20px) saturate(1.5);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        pointer-events: none;
+      }
       body {
         margin: 0;
         font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -480,14 +494,22 @@
         width: 236px;
         padding: 20px 20px 22px;
         border-radius: 16px;
-        background: rgba(16, 24, 32, 0.82);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        /* More glass (owner 2026-11-27): much more transparent + stronger
+           blur so the hero photo shows through like frosted glass. */
+        background: rgba(16, 24, 32, 0.55);
+        backdrop-filter: blur(16px) saturate(1.4);
+        -webkit-backdrop-filter: blur(16px) saturate(1.4);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         box-shadow: 0 20px 44px -18px rgba(16, 24, 32, 0.55);
         color: #fff;
         transition: transform .35s ease, box-shadow .35s ease;
         -webkit-tap-highlight-color: transparent;
       }
+      /* The hero card's tap is far gentler than the shared shrink (owner
+         2026-11-27): it only presses to 0.97 instead of 0.88, so it no
+         longer feels like it sinks down on tap. */
+      @keyframes hero-card-tap { 0% { transform: scale(1); } 40% { transform: scale(.97); } 100% { transform: scale(1); } }
+      .arch-hero-card.tapped { animation: hero-card-tap .6s cubic-bezier(0.22, 1, 0.36, 1); }
       /* Hover (owner 2026-11-26, demo 3): the card lifts and its shadow
          deepens. GSAP clears its inline transform after the entrance
          (clearProps), so this stylesheet transform applies. */
