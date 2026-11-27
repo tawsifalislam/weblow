@@ -124,9 +124,9 @@
            hamburger stays hidden on desktop. */
         .site-head .menu-btn { display: none; }
       }
-      /* The header Let's Talk shows on desktop only; on mobile the
+      /* The hero Let's Talk shows on desktop only; on mobile the
          dropdown's Contact link reaches the same section. */
-      @media (max-width: 1023px) { .site-head .arch-talk-btn { display: none; } }
+      @media (max-width: 1023px) { .arch-hero .arch-talk-btn { display: none; } }
       /* Anchor sections sit below the sticky header when jumped to. */
       #services, #work, #pricing, #how, #contact { scroll-margin-top: 70px; }
       .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; }
@@ -275,9 +275,9 @@
             rgba(246, 250, 247, 0) 26%
           );
       }
-      /* Let's Talk — now lives in the header (owner 2026-11-27), so it
-         must NOT use the hero-scoped --ah-* variables (they only exist
-         inside .arch-hero); colours are written out literally. */
+      /* Let's Talk — back in the hero (owner 2026-11-27), bottom-right
+         inside the picture; colours are written out literally (same
+         values as the hero-scoped --ah-* variables). */
       .arch-talk-btn {
         display: inline-flex;
         align-items: center;
@@ -302,6 +302,15 @@
         box-shadow: 0 14px 30px -12px rgba(38, 219, 200, 0.55);
       }
       .arch-talk-btn:hover .arrow { transform: translateX(3px); }
+      /* Let's Talk — back in the hero (owner 2026-11-27, "age jemon silo
+         temon"): bottom-right, inside the picture, above the dark
+         service bar, aligned with the Innovative Design card's edge. */
+      .arch-hero .arch-talk-btn {
+        position: absolute;
+        z-index: 3;
+        right: clamp(22px, 6vw, 88px);
+        bottom: 320px;
+      }
       .arch-talk-btn:focus-visible,
       .arch-btn:focus-visible {
         outline: 3px solid rgba(38, 219, 200, 0.55);
@@ -673,17 +682,8 @@
           height: 1.6vw;
           box-shadow: 0 0 0 1vw var(--ah-green-soft);
         }
-        /* Scoped to the hero: the talk button moved to the header
-           (owner 2026-11-27), so these mobile hero sizes must not
-           resize the header button in the 1024–1100px range. */
-        .arch-hero .arch-talk-btn {
-          top: 2.5vw;
-          right: 3vw;
-          min-height: 7.5vw;
-          padding: 1.8vw 3.2vw;
-          font-size: 3.1vw;
-          gap: 1.8vw;
-        }
+        /* The hero talk button is hidden on mobile (see the
+           max-width: 1023px rule above), so no mobile sizes here. */
         .arch-hero h1 { font-size: 5.8vw; line-height: 1.08; margin-top: 1.2vw; }
         .arch-lede { margin-top: 1.2vw; font-size: 2.8vw; line-height: 1.4; max-width: 94%; }
         .arch-cta-row { margin-top: 1.8vw; gap: 2vw; flex-wrap: nowrap; }
@@ -1048,7 +1048,6 @@
           <a href="#contact">Contact</a>
         </nav>
         <div class="head-actions">
-          <a class="arch-talk-btn" id="talkBtn" href="#contact">Let&rsquo;s Talk <span class="arrow" aria-hidden="true">&rarr;</span></a>
           <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="headMenu"><span></span><span></span><span></span></button>
         </div>
       </div>
@@ -1121,6 +1120,7 @@
             <p>Bringing your ideas to life before they are built.</p>
           </div>
         </div>
+        <a class="arch-talk-btn" id="talkBtn" href="#contact">Let&rsquo;s Talk <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </section>
 
       <!-- ============ SERVICES ============ -->
