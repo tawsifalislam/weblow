@@ -20,7 +20,7 @@
         --teal-accent-dark: #0B7A6E;
         --ink: #101613;
         --ink-soft: #43554F;
-        --bg: linear-gradient(135deg, #E3F7F3 0%, #FFFFFF 50%, #DFF5F0 100%);
+        --bg: linear-gradient(135deg, #A5E9DC 0%, #D9F6F1 35%, #FFFFFF 55%, #BFEFE7 100%);
         --bg-alt: transparent;
         --card: #FFFFFF;
         --line: #DCE8E3;
@@ -747,6 +747,47 @@
       .svc-card .icon { display: inline-block; line-height: 0; color: var(--teal-deep); margin-bottom: 18px; transition: color .3s ease; }
       .svc-card .icon svg { width: 38px; height: 38px; }
       .svc-card:hover .icon { color: var(--teal-accent); }
+      /* Service-card icon animations (owner 2026-11-27): every icon animates
+         in a way that matches its service, looping forever. Plain CSS
+         keyframes only — never gated behind prefers-reduced-motion. */
+      .svc-card .icon svg, .svc-card .icon svg * { transform-box: fill-box; }
+      /* 1 — Monitor (Website Development): gentle float + a loading bar
+         fills inside the screen, then fades and refills. */
+      .anim-monitor svg { animation: svc-monitor-float 2.6s ease-in-out infinite; }
+      .anim-monitor .mon-bar { transform-origin: left center; animation: svc-monitor-bar 2.6s ease-in-out infinite; }
+      @keyframes svc-monitor-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+      @keyframes svc-monitor-bar { 0% { transform: scaleX(0); opacity: 1; } 55% { transform: scaleX(1); opacity: 1; } 80% { transform: scaleX(1); opacity: 1; } 92%, 100% { transform: scaleX(1); opacity: 0; } }
+      /* 2 — Cube (Product Management): gentle wobble, like the box is
+         being turned around to show its faces. */
+      .anim-cube svg { transform-origin: center; animation: svc-cube-wobble 3s ease-in-out infinite; }
+      @keyframes svc-cube-wobble { 0%, 100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(6deg) translateY(-2px); } }
+      /* 3 — Clipboard (Order Management): the three list lines write
+         themselves in one by one, then the list fades and rewrites. */
+      .anim-clip .clip-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: svc-clip-draw1 3.6s ease-in-out infinite; }
+      .anim-clip .clip-line:nth-of-type(2) { animation-name: svc-clip-draw2; }
+      .anim-clip .clip-line:nth-of-type(3) { animation-name: svc-clip-draw3; }
+      .anim-clip .clip-lines { animation: svc-clip-fade 3.6s ease-in-out infinite; }
+      @keyframes svc-clip-draw1 { 0% { stroke-dashoffset: 1; } 20%, 100% { stroke-dashoffset: 0; } }
+      @keyframes svc-clip-draw2 { 0%, 18% { stroke-dashoffset: 1; } 38%, 100% { stroke-dashoffset: 0; } }
+      @keyframes svc-clip-draw3 { 0%, 36% { stroke-dashoffset: 1; } 56%, 100% { stroke-dashoffset: 0; } }
+      @keyframes svc-clip-fade { 0%, 80% { opacity: 1; } 92%, 100% { opacity: 0; } }
+      /* 4 — Card (Payment): a swipe — slides right and tilts, then back. */
+      .anim-card svg { animation: svc-card-swipe 2.2s ease-in-out infinite; }
+      @keyframes svc-card-swipe { 0%, 100% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(8px) rotate(-4deg); } }
+      /* 5 — Truck (Courier & Delivery): drives forward with a little bob,
+         wheels spinning. The spoke line inside each wheel makes the spin visible. */
+      .anim-truck svg { animation: svc-truck-drive 1.8s ease-in-out infinite; }
+      .anim-truck .wheel { transform-origin: center; animation: svc-wheel-spin .8s linear infinite; }
+      @keyframes svc-truck-drive { 0%, 100% { transform: translateX(0) translateY(0); } 25% { transform: translateX(5px) translateY(-1px); } 50% { transform: translateX(10px) translateY(0); } 75% { transform: translateX(5px) translateY(-1px); } }
+      @keyframes svc-wheel-spin { to { transform: rotate(360deg); } }
+      /* 6 — Bell (Automation & Notification): rings — the bell swings with
+         a decaying swing, the clapper swings the other way, sound waves pulse. */
+      .anim-bell .bell-body { transform-origin: 50% 0; animation: svc-bell-ring 2.4s ease-in-out infinite; }
+      .anim-bell .bell-clapper { transform-origin: 50% 0; animation: svc-bell-clapper 2.4s ease-in-out infinite; }
+      .anim-bell .bell-wave { transform-origin: center; animation: svc-bell-wave 2.4s ease-in-out infinite; }
+      @keyframes svc-bell-ring { 0%, 100% { transform: rotate(0deg); } 12% { transform: rotate(-14deg); } 26% { transform: rotate(11deg); } 40% { transform: rotate(-8deg); } 54% { transform: rotate(5deg); } 68% { transform: rotate(-2deg); } 80% { transform: rotate(0deg); } }
+      @keyframes svc-bell-clapper { 0%, 100% { transform: rotate(0deg); } 12% { transform: rotate(10deg); } 26% { transform: rotate(-8deg); } 40% { transform: rotate(6deg); } 54% { transform: rotate(-3deg); } 68% { transform: rotate(0deg); } }
+      @keyframes svc-bell-wave { 0%, 55% { opacity: 0; transform: scale(.7); } 15%, 40% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
       .svc-card h3 { font-size: 1.18rem; font-weight: 700; margin-bottom: 14px; }
       .svc-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
       .svc-list li { display: flex; gap: 10px; align-items: flex-start; font-size: .97rem; color: var(--ink-soft); line-height: 1.55; }
@@ -975,7 +1016,7 @@
           </div>
           <div class="svc-grid">
             <article class="svc-card reveal">
-              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 21h6M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="icon anim-monitor"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><rect class="mon-bar" x="6.5" y="9" width="11" height="2" rx="1" fill="currentColor" stroke="none"/><path d="M9 21h6M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
               <h3>১. Website Development &amp; Design</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">প্রফেশনাল ই-কমার্স ওয়েবসাইট ও ল্যান্ডিং পেজ</span></li>
@@ -987,7 +1028,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 8l9 5 9-5M12 13v8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+              <div class="icon anim-cube"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 8l9 5 9-5M12 13v8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
               <h3>২. Product Management System</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">প্রোডাক্ট ক্যাটালগ ও ক্যাটাগরি ম্যানেজমেন্ট</span></li>
@@ -1000,7 +1041,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="icon anim-clip"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"/><g class="clip-lines"><path class="clip-line" pathLength="1" d="M9 8h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="clip-line" pathLength="1" d="M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="clip-line" pathLength="1" d="M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg></div>
               <h3>৩. Order &amp; Customer Management</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">অর্ডার ম্যানেজমেন্ট সিস্টেম</span></li>
@@ -1014,7 +1055,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 10.5h18" stroke="currentColor" stroke-width="2"/><path d="M7 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="icon anim-card"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 10.5h18" stroke="currentColor" stroke-width="2"/><path d="M7 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
               <h3>৪. Payment &amp; Financial Management</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">বিকাশ, মার্চেন্ট নাম্বার ও পার্সোনাল নাম্বারসহ পেমেন্ট ইন্টিগ্রেশন</span></li>
@@ -1027,7 +1068,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8h11v9H3zM14 11h4l3 3v3h-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="17" r="2" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/></svg></div>
+              <div class="icon anim-truck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8h11v9H3zM14 11h4l3 3v3h-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><g class="wheel"><circle cx="7" cy="17" r="2" stroke="currentColor" stroke-width="2"/><path d="M7 15v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g><g class="wheel"><circle cx="17.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/><path d="M17.5 15v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg></div>
               <h3>৫. Courier &amp; Delivery Integration</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">SteadFast, Pathao ও RedX কুরিয়ার ইন্টিগ্রেশন</span></li>
@@ -1038,7 +1079,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="icon anim-bell"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><g class="bell-body"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></g><g class="bell-clapper"><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g><path class="bell-wave" d="M2.5 9.5c-1 1.2-1 2.8 0 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><path class="bell-wave" d="M21.5 9.5c1 1.2 1 2.8 0 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div>
               <h3>৬. Automation &amp; Notification System</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">টেলিগ্রামে অর্ডার অ্যালার্ট ইন্টিগ্রেশন</span></li>
