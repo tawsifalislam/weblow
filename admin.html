@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — Method &amp; tricks | Weblow</title>
+<style>
+  :root {
+    --teal-deep: #00393A;
+    --teal-accent: #26DBC8;
+    --teal-accent-dark: #0B7A6E;
+    --bg: linear-gradient(135deg, #A5E9DC 0%, #D9F6F1 15%, #EBF2E3 30%, #EBF2E3 75%, #BFEFE7 100%);
+    --card: #FFFFFF;
+    --line: rgba(0, 57, 58, .12);
+    --ink: #101820;
+    --ink-soft: #4a5a5c;
+    --danger: #C0392B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hind Siliguri", "Inter", system-ui, -apple-system, sans-serif;
+    background: var(--bg); background-attachment: fixed;
+    color: var(--ink); min-height: 100vh;
+  }
+  header {
+    background: rgba(255, 255, 255, .75);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 20px; position: sticky; top: 0; z-index: 10;
+  }
+  header .inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  header h1 { font-size: 1.15rem; color: var(--teal-deep); }
+  header h1 span { color: var(--teal-accent-dark); }
+  header a { color: var(--teal-accent-dark); font-weight: 700; font-size: .9rem; text-decoration: none; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 16px; padding: 22px 20px; margin-bottom: 18px;
+    box-shadow: 0 8px 24px -12px rgba(0, 57, 58, .18);
+  }
+  h2 { font-size: 1.15rem; color: var(--teal-deep); margin-bottom: 6px; }
+  p { color: var(--ink-soft); font-size: .95rem; line-height: 1.6; }
+  p + p { margin-top: 8px; }
+  label { display: block; font-weight: 700; font-size: .9rem; color: var(--teal-deep); margin: 14px 0 6px; }
+  input[type="text"], input[type="password"], select, textarea {
+    width: 100%; padding: 11px 12px; font: inherit; font-size: .95rem;
+    border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink);
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  .btn {
+    display: inline-block; border: 0; cursor: pointer; font: inherit; font-weight: 700;
+    padding: 11px 20px; border-radius: 999px; margin-top: 14px;
+    background: var(--teal-accent); color: var(--teal-deep);
+    box-shadow: 0 10px 22px -10px rgba(38, 219, 200, .7);
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost { background: #fff; border: 1.5px solid var(--teal-accent-dark); color: var(--teal-accent-dark); box-shadow: none; }
+  .btn.danger { background: #fff; border: 1.5px solid var(--danger); color: var(--danger); box-shadow: none; }
+  .btn.small { padding: 7px 14px; font-size: .85rem; margin-top: 0; }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .status { margin-top: 14px; padding: 12px 14px; border-radius: 10px; font-size: .95rem; display: none; }
+  .status.show { display: block; }
+  .status.ok { background: #E3F7F3; color: var(--teal-deep); border: 1px solid var(--teal-accent); }
+  .status.err { background: #FDECEA; color: var(--danger); border: 1px solid #F5B7B1; }
+  .status.info { background: #FEF9E7; color: #7D6608; border: 1px solid #F9E79F; }
+  .item { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 12px; }
+  .item .tag {
+    display: inline-block; background: var(--teal-accent); color: var(--teal-deep);
+    font-size: .78rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-bottom: 8px;
+  }
+  .item h3 { font-size: 1rem; margin-bottom: 4px; }
+  .item p { font-size: .92rem; }
+  .item .row { margin-top: 10px; }
+  .muted { font-size: .85rem; color: var(--ink-soft); }
+  .token-ok { color: var(--teal-accent-dark); font-weight: 700; }
+  ol.steps { margin: 10px 0 0 20px; color: var(--ink-soft); font-size: .92rem; line-height: 1.7; }
+  ol.steps a { color: var(--teal-accent-dark); font-weight: 700; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <h1>Weblow <span>Admin</span> — Method &amp; tricks</h1>
+    <a href="index.html#methods">← সাইট দেখুন</a>
+  </div>
+</header>
+
+<main>
+  <!-- ============ PASSCODE GATE ============ -->
+  <section class="card" id="lockScreen">
+    <h2 id="lockTitle">পাসকোড দিন</h2>
+    <p id="lockDesc">এই অ্যাডমিন প্যানেল শুধু আপনার জন্য। প্রথমবার পাসকোড সেট করুন — এটা শুধু আপনার ব্রাউজারে থাকবে, সাইটে কোথাও লেখা থাকবে না।</p>
+    <label for="passInput">পাসকোড</label>
+    <input type="password" id="passInput" placeholder="কমপক্ষে ৪ অক্ষর" autocomplete="off">
+    <div id="passConfirmWrap" hidden>
+      <label for="passConfirm">পাসকোড আবার লিখুন</label>
+      <input type="password" id="passConfirm" placeholder="একই পাসকোড" autocomplete="off">
+    </div>
+    <button class="btn" id="passBtn" type="button">ঢুকুন</button>
+    <div class="status err" id="lockStatus"></div>
+  </section>
+
+  <!-- ============ PANEL ============ -->
+  <section id="panel" hidden>
+
+    <div class="card">
+      <h2>১. GitHub টোকেন</h2>
+      <p>Publish করতে একবার টোকেন বসাতে হবে। টোকেন শুধু আপনার ব্রাউজারে থাকে — আমাকে বা আর কাউকে পাঠাতে হবে না।</p>
+      <ol class="steps">
+        <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">এখানে ক্লিক করে টোকেন বানান</a></li>
+        <li>Token name: <b>weblow-admin</b></li>
+        <li>Repository access: <b>Only select repositories → tawsifalislam/weblow</b></li>
+        <li>Repository permissions → <b>Contents: Read and write</b></li>
+        <li>Generate token → কপি করে নিচে বসান</li>
+      </ol>
+      <label for="tokenInput">GitHub টোকেন</label>
+      <input type="password" id="tokenInput" placeholder="github_pat_..." autocomplete="off">
+      <div class="row">
+        <button class="btn" id="tokenSaveBtn" type="button">টোকেন সেভ করুন</button>
+        <button class="btn ghost" id="tokenClearBtn" type="button">টোকেন মুছুন</button>
+        <span class="muted" id="tokenState">টোকেন বসানো হয়নি।</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>২. নতুন Method / Trick যোগ করুন</h2>
+      <label for="fTitle">শিরোনাম</label>
+      <input type="text" id="fTitle" placeholder="যেমন: প্রোডাক্টের ছবি দিনের আলোয় তুলুন">
+      <label for="fCat">বিভাগ</label>
+      <select id="fCat">
+        <option>ছবি</option>
+        <option>দাম</option>
+        <option>অর্ডার</option>
+        <option>কুরিয়ার</option>
+        <option>কাস্টমার</option>
+        <option>পেমেন্ট</option>
+        <option>অন্যান্য</option>
+      </select>
+      <label for="fText">বিস্তারিত</label>
+      <textarea id="fText" placeholder="২-৩ লাইনে সহজ ভাষায় লিখুন"></textarea>
+      <div class="row">
+        <button class="btn" id="addBtn" type="button">যোগ করুন</button>
+        <button class="btn ghost" id="cancelEditBtn" type="button" hidden>বাতিল</button>
+      </div>
+      <div class="status err" id="formStatus"></div>
+    </div>
+
+    <div class="card">
+      <h2>৩. এখন যা যা আছে (<span id="itemCount">০</span>টি)</h2>
+      <p class="muted" id="draftNote" hidden>⚠ ড্রাফট আছে — লাইভ ভার্সন থেকে আলাদা। Publish করলে ড্রাফটটাই লাইভ হবে।</p>
+      <div id="itemsList"></div>
+      <div class="row">
+        <button class="btn" id="publishBtn" type="button">✓ Publish করুন (সাইটে লাইভ হবে)</button>
+        <button class="btn ghost" id="resetBtn" type="button">লাইভ ভার্সনে ফিরুন</button>
+      </div>
+      <div class="status" id="pubStatus"></div>
+      <p class="muted" style="margin-top:14px;">Publish-এর পর সাইট আপডেট হতে ~১ মিনিট লাগতে পারে। তারপর <a href="index.html#methods" style="color:var(--teal-accent-dark);font-weight:700;">Method &amp; tricks সেকশন</a> দেখুন।</p>
+    </div>
+
+    <div class="card">
+      <h2>নিরাপত্তা</h2>
+      <p>পাসকোড শুধু আপনার ব্রাউজারে থাকে। অন্য কেউ আপনার ফোন/ব্রাউজার না পেলে ঢুকতে পারবে না। পাসকোড ভুলে গেলে ব্রাউজারের সাইট ডেটা মুছে আবার সেট করুন।</p>
+      <div class="row">
+        <button class="btn ghost" id="changePassBtn" type="button">পাসকোড বদলান</button>
+        <button class="btn danger" id="logoutBtn" type="button">লগ আউট</button>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var PASS_KEY = "weblow-admin-pass";
+  var TOKEN_KEY = "weblow-gh-token";
+  var DRAFT_KEY = "weblow-methods-draft";
+  var UNLOCK_KEY = "weblow-admin-unlocked";
+  var REPO = "tawsifalislam/weblow";
+  var FILE_PATH = "methods.json";
+  var API = "https://api.github.com/repos/" + REPO + "/contents/" + FILE_PATH;
+
+  function $(id) { return document.getElementById(id); }
+  function showStatus(id, msg, kind) {
+    var n = $(id);
+    n.textContent = msg;
+    n.className = "status show " + (kind || "info");
+  }
+  function hideStatus(id) { var n = $(id); n.className = "status"; n.textContent = ""; }
+  function esc(s) { return String(s == null ? "" : s); }
+
+  /* ---------- Passcode ---------- */
+  var lockScreen = $("lockScreen"), panel = $("panel");
+  var passInput = $("passInput"), passConfirm = $("passConfirm"), passConfirmWrap = $("passConfirmWrap");
+  var hasPass = !!localStorage.getItem(PASS_KEY);
+  var isSetup = !hasPass;
+
+  function showPanel() {
+    lockScreen.hidden = true;
+    panel.hidden = false;
+    loadItems();
+    refreshTokenState();
+  }
+  function showLock() {
+    lockScreen.hidden = false;
+    panel.hidden = true;
+    if (isSetup) {
+      $("lockTitle").textContent = "পাসকোড সেট করুন";
+      $("lockDesc").textContent = "প্রথমবার ব্যবহার করছেন — একটা পাসকোড বেছে নিন। এটা শুধু আপনার ব্রাউজারে থাকবে, সাইটে কোথাও লেখা থাকবে না।";
+      passConfirmWrap.hidden = false;
+      $("passBtn").textContent = "পাসকোড সেট করুন";
+    } else {
+      $("lockTitle").textContent = "পাসকোড দিন";
+      $("lockDesc").textContent = "অ্যাডমিন প্যানেলে ঢুকতে আপনার পাসকোড দিন।";
+      passConfirmWrap.hidden = true;
+      $("passBtn").textContent = "ঢুকুন";
+    }
+  }
+
+  $("passBtn").addEventListener("click", function () {
+    var p = passInput.value.trim();
+    hideStatus("lockStatus");
+    if (p.length < 4) { showStatus("lockStatus", "পাসকোড কমপক্ষে ৪ অক্ষরের হতে হবে।", "err"); return; }
+    if (isSetup) {
+      if (p !== passConfirm.value.trim()) { showStatus("lockStatus", "দুটো পাসকোড মিলছে না। আবার লিখুন।", "err"); return; }
+      localStorage.setItem(PASS_KEY, p);
+      sessionStorage.setItem(UNLOCK_KEY, "1");
+      passInput.value = ""; passConfirm.value = "";
+      showPanel();
+    } else {
+      if (p === localStorage.getItem(PASS_KEY)) {
+        sessionStorage.setItem(UNLOCK_KEY, "1");
+        passInput.value = "";
+        showPanel();
+      } else {
+        showStatus("lockStatus", "ভুল পাসকোড। আবার চেষ্টা করুন।", "err");
+      }
+    }
+  });
+  passInput.addEventListener("keydown", function (e) { if (e.key === "Enter") $("passBtn").click(); });
+
+  $("changePassBtn").addEventListener("click", function () {
+    localStorage.removeItem(PASS_KEY);
+    sessionStorage.removeItem(UNLOCK_KEY);
+    isSetup = true;
+    showLock();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("logoutBtn").addEventListener("click", function () {
+    sessionStorage.removeItem(UNLOCK_KEY);
+    showLock();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* ---------- Token ---------- */
+  function getToken() { return (localStorage.getItem(TOKEN_KEY) || "").trim(); }
+  function refreshTokenState() {
+    var t = getToken();
+    $("tokenState").textContent = t ? "✓ টোকেন সেভ আছে।" : "টোকেন বসানো হয়নি।";
+    $("tokenState").className = t ? "muted token-ok" : "muted";
+    if (t) $("tokenInput").value = "";
+  }
+  $("tokenSaveBtn").addEventListener("click", function () {
+    var t = $("tokenInput").value.trim();
+    if (!t) { showStatus("pubStatus", "আগে টোকেন লিখুন।", "err"); return; }
+    localStorage.setItem(TOKEN_KEY, t);
+    $("tokenInput").value = "";
+    refreshTokenState();
+    showStatus("pubStatus", "টোকেন সেভ হয়েছে। এখন Publish করতে পারবেন।", "ok");
+  });
+  $("tokenClearBtn").addEventListener("click", function () {
+    localStorage.removeItem(TOKEN_KEY);
+    refreshTokenState();
+    showStatus("pubStatus", "টোকেন মুছে ফেলা হয়েছে।", "info");
+  });
+
+  /* ---------- Items ---------- */
+  var items = [];
+  var editingIndex = -1;
+
+  function saveDraft() {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(items));
+    $("draftNote").hidden = false;
+  }
+  function renderList() {
+    var list = $("itemsList");
+    list.innerHTML = "";
+    $("itemCount").textContent = items.length;
+    if (!items.length) {
+      var p = document.createElement("p");
+      p.className = "muted";
+      p.textContent = "কোনো টিপস নেই। উপরে ফর্ম থেকে প্রথমটা যোগ করুন।";
+      list.appendChild(p);
+      return;
+    }
+    items.forEach(function (it, i) {
+      var box = document.createElement("div");
+      box.className = "item";
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = it.cat || "টিপস";
+      var h = document.createElement("h3");
+      h.textContent = it.title;
+      var tx = document.createElement("p");
+      tx.textContent = it.text;
+      var row = document.createElement("div");
+      row.className = "row";
+      var eb = document.createElement("button");
+      eb.className = "btn ghost small";
+      eb.type = "button";
+      eb.textContent = "এডিট";
+      eb.addEventListener("click", function () { startEdit(i); });
+      var db = document.createElement("button");
+      db.className = "btn danger small";
+      db.type = "button";
+      db.textContent = "ডিলিট";
+      db.addEventListener("click", function () {
+        if (confirm("“" + it.title + "” — এটা মুছে ফেলবেন?")) {
+          items.splice(i, 1);
+          saveDraft();
+          renderList();
+        }
+      });
+      row.appendChild(eb);
+      row.appendChild(db);
+      box.appendChild(tag);
+      box.appendChild(h);
+      box.appendChild(tx);
+      box.appendChild(row);
+      list.appendChild(box);
+    });
+  }
+  function clearForm() {
+    $("fTitle").value = "";
+    $("fText").value = "";
+    $("fCat").selectedIndex = 0;
+    editingIndex = -1;
+    $("addBtn").textContent = "যোগ করুন";
+    $("cancelEditBtn").hidden = true;
+    hideStatus("formStatus");
+  }
+  function startEdit(i) {
+    var it = items[i];
+    editingIndex = i;
+    $("fTitle").value = it.title;
+    $("fText").value = it.text;
+    var sel = $("fCat");
+    var found = false;
+    for (var k = 0; k < sel.options.length; k++) {
+      if (sel.options[k].text === it.cat) { sel.selectedIndex = k; found = true; break; }
+    }
+    if (!found) sel.selectedIndex = sel.options.length - 1;
+    $("addBtn").textContent = "সেভ করুন";
+    $("cancelEditBtn").hidden = false;
+    window.scrollTo({ top: $("fTitle").offsetTop - 80, behavior: "smooth" });
+    $("fTitle").focus();
+  }
+  $("cancelEditBtn").addEventListener("click", clearForm);
+  $("addBtn").addEventListener("click", function () {
+    var title = $("fTitle").value.trim();
+    var text = $("fText").value.trim();
+    var cat = $("fCat").value;
+    hideStatus("formStatus");
+    if (!title) { showStatus("formStatus", "শিরোনাম লিখুন।", "err"); return; }
+    if (!text) { showStatus("formStatus", "বিস্তারিত লিখুন।", "err"); return; }
+    var obj = { title: title, cat: cat, text: text };
+    if (editingIndex >= 0) items[editingIndex] = obj;
+    else items.push(obj);
+    saveDraft();
+    renderList();
+    clearForm();
+  });
+
+  function loadItems() {
+    var draft = null;
+    try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null"); } catch (e) { draft = null; }
+    if (Array.isArray(draft)) {
+      items = draft;
+      $("draftNote").hidden = false;
+      renderList();
+      return;
+    }
+    fetch(FILE_PATH + "?v=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
+      .then(function (data) { items = Array.isArray(data) ? data : []; renderList(); })
+      .catch(function () {
+        items = [];
+        renderList();
+        showStatus("pubStatus", "লাইভ ফাইল লোড করা যায়নি — ইন্টারনেট চেক করুন, তারপর পেজ রিফ্রেশ করুন।", "err");
+      });
+  }
+  $("resetBtn").addEventListener("click", function () {
+    localStorage.removeItem(DRAFT_KEY);
+    $("draftNote").hidden = true;
+    hideStatus("pubStatus");
+    loadItems();
+  });
+
+  /* ---------- Publish via GitHub API ---------- */
+  function b64utf8(str) { return btoa(unescape(encodeURIComponent(str))); }
+  $("publishBtn").addEventListener("click", function () {
+    var token = getToken();
+    if (!token) {
+      showStatus("pubStatus", "আগে উপরে GitHub টোকেন বসিয়ে সেভ করুন।", "err");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    var btn = $("publishBtn");
+    btn.disabled = true;
+    btn.textContent = "Publish হচ্ছে…";
+    showStatus("pubStatus", "GitHub-এ পাঠানো হচ্ছে…", "info");
+    var json = JSON.stringify(items.map(function (it) {
+      return { title: esc(it.title), cat: esc(it.cat), text: esc(it.text) };
+    }), null, 2) + "\n";
+
+    fetch(API, { headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" } })
+      .then(function (r) {
+        if (r.status === 404) return { sha: null };
+        if (!r.ok) throw new Error("ফাইল পড়া যায়নি (HTTP " + r.status + ") — টোকেন ঠিক আছে কি না দেখুন।");
+        return r.json();
+      })
+      .then(function (meta) {
+        var body = { message: "Update Method & tricks (admin panel)", content: b64utf8(json) };
+        if (meta && meta.sha) body.sha = meta.sha;
+        return fetch(API, {
+          method: "PUT",
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
+      })
+      .then(function (r) {
+        if (r.status === 401) throw new Error("টোকেন ভুল বা মেয়াদ শেষ — নতুন টোকেন বানিয়ে আবার বসান।");
+        if (r.status === 403) throw new Error("টোকেনের অনুমতি নেই — Contents: Read and write দিয়েছেন কি না দেখুন।");
+        if (r.status === 404) throw new Error("রিপো খুঁজে পাওয়া যায়নি — টোকেনে tawsifalislam/weblow সিলেক্ট করেছেন কি না দেখুন।");
+        if (!r.ok) throw new Error("Publish হয়নি (HTTP " + r.status + ")।");
+        return r.json();
+      })
+      .then(function () {
+        localStorage.removeItem(DRAFT_KEY);
+        $("draftNote").hidden = true;
+        showStatus("pubStatus", "✓ Publish হয়েছে! সাইটে দেখতে ~১ মিনিট লাগতে পারে।", "ok");
+      })
+      .catch(function (err) {
+        showStatus("pubStatus", "✗ " + (err && err.message ? err.message : "কিছু একটা ভুল হয়েছে।"), "err");
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = "✓ Publish করুন (সাইটে লাইভ হবে)";
+      });
+  });
+
+  /* ---------- Boot ---------- */
+  if (sessionStorage.getItem(UNLOCK_KEY) === "1" && hasPass) showPanel();
+  else showLock();
+})();
+</script>
+</body>
+</html>
