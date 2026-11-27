@@ -124,9 +124,6 @@
            hamburger stays hidden on desktop. */
         .site-head .menu-btn { display: none; }
       }
-      /* The hero Let's Talk shows on desktop only; on mobile the
-         dropdown's Contact link reaches the same section. */
-      @media (max-width: 1023px) { .arch-hero .arch-talk-btn { display: none; } }
       /* Anchor sections sit below the sticky header when jumped to. */
       #about, #services, #work, #pricing, #how, #methods, #contact { scroll-margin-top: 70px; }
       .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px; }
@@ -302,14 +299,15 @@
         box-shadow: 0 14px 30px -12px rgba(38, 219, 200, 0.55);
       }
       .arch-talk-btn:hover .arrow { transform: translateX(3px); }
-      /* Let's Talk — back in the hero (owner 2026-11-27, "age jemon silo
-         temon"): bottom-right, inside the picture, above the dark
-         service bar, aligned with the Innovative Design card's edge. */
+      /* Let's Talk — top-right of the hero picture (owner 2026-11-27, marked
+         spot), directly above the Innovative Design card, aligned with its
+         right edge. Desktop: top 96px; mobile: top-right of the photo
+         (see the max-width: 760px block). */
       .arch-hero .arch-talk-btn {
         position: absolute;
         z-index: 3;
         right: clamp(22px, 6vw, 88px);
-        bottom: 320px;
+        top: 96px;
       }
       .arch-talk-btn:focus-visible,
       .arch-btn:focus-visible {
@@ -682,8 +680,15 @@
           height: 1.6vw;
           box-shadow: 0 0 0 1vw var(--ah-green-soft);
         }
-        /* The hero talk button is hidden on mobile (see the
-           max-width: 1023px rule above), so no mobile sizes here. */
+        /* The hero talk button shows on mobile at the photo's top-right
+           (owner 2026-11-27, marked spot), the SAME SIZE as the
+           "Designing the Future" pill and on the SAME LINE as it (owner
+           2026-11-27 16:32). Pill metrics, measured: height ~7.1vw, top
+           ~2.1vw, font 2.6vw, side padding 2.5vw — the button copies them
+           so the two stay matched at every phone width. This rule must sit
+           AFTER the desktop .arch-talk-btn rule (same specificity — later
+           wins) or the desktop top/right win. */
+        .arch-hero .arch-talk-btn { top: 2.1vw; right: 4vw; height: 7.1vw; min-height: 0; padding: 0 2.5vw; font-size: 2.6vw; gap: 1.5vw; }
         .arch-hero h1 { font-size: 5.8vw; line-height: 1.08; margin-top: 1.2vw; }
         .arch-lede { margin-top: 1.2vw; font-size: 2.8vw; line-height: 1.4; max-width: 94%; }
         .arch-cta-row { margin-top: 1.8vw; gap: 2vw; flex-wrap: nowrap; }
@@ -782,7 +787,12 @@
          diagonal teal → white → teal, sampled from the image:
          #26DBC8 (top-left, the brand bright teal) → #BBF4EE →
          #F8FEFE (white centre) → #CFF8F4 → #5CE5D5 (bottom-right). */
-      .svc-card { background: linear-gradient(135deg, #26DBC8 0%, #BBF4EE 25%, #F8FEFE 50%, #CFF8F4 75%, #5CE5D5 100%); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow); position: relative; -webkit-tap-highlight-color: transparent; }
+      /* Service cards are 100% GLASS (owner 2026-11-27 16:32): the teal
+         gradient fill is gone — a light frosted panel lets the page
+         background show through. Same glass recipe as the page frost
+         (body::before), slightly stronger white so the card still reads
+         as a panel. Icons/text stay Deep Teal on the light glass. */
+      .svc-card { background: rgba(255, 255, 255, 0.28); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow); position: relative; -webkit-tap-highlight-color: transparent; }
       /* The reveal sets a 2s transition (opacity + transform); this keeps
          that for the entrance while giving the hover lift a fast .3s. */
       html.js .svc-card.reveal, html.js .svc-card.reveal.in {
