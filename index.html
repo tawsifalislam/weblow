@@ -20,8 +20,8 @@
         --teal-accent-dark: #0B7A6E;
         --ink: #101613;
         --ink-soft: #43554F;
-        --bg: #FFFFFF;
-        --bg-alt: #FFFFFF;
+        --bg: linear-gradient(135deg, #E3F7F3 0%, #FFFFFF 50%, #DFF5F0 100%);
+        --bg-alt: transparent;
         --card: #FFFFFF;
         --line: #DCE8E3;
         --sky: #DFF2FB;
@@ -33,9 +33,11 @@
         --shadow: 0 18px 40px rgba(1, 60, 56, 0.10);
         --radius: 18px;
       }
-      /* The page is a fixed light design: white section backgrounds with
-         deep-teal bands, exactly as branded — it does not flip with the
-         phone's dark-mode setting, so the white always shows. */
+      /* The page is a fixed light design: a soft teal gradient background
+         with deep-teal bands, exactly as branded — it does not flip with the
+         phone's dark-mode setting, so the gradient always shows. The gradient
+         is fixed to the viewport so it never stretches on the long page, and
+         .section-alt is transparent so it shows through continuously. */
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
       body {
@@ -43,6 +45,7 @@
         font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
         color: var(--ink);
         background: var(--bg);
+        background-attachment: fixed;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
       }
@@ -738,10 +741,12 @@
          icon turn teal. Uses `translate` because `.reveal.in` sets
          `transform: none` with higher specificity. */
       .svc-card:hover { translate: 0 -4px; border-color: var(--teal-accent); box-shadow: 0 18px 36px -14px rgba(1, 60, 56, .28); }
-      .svc-card .icon { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: rgba(38, 219, 200, .14); color: var(--teal-accent-dark); margin-bottom: 16px; transition: background .3s ease, color .3s ease; }
-      .svc-card:hover .icon { background: var(--teal-accent); color: var(--teal-deep); }
-      .svc-card .icon--sky { background: var(--sky); color: var(--teal-deep); }
-      .svc-card .icon--deep { background: var(--teal-deep); color: var(--teal-accent); }
+      /* Service-card icon (owner 2026-11-27): no background shape — the glyph
+         itself, in the brand's main colour (Deep Teal #00393A), larger so it
+         reads without the box. Hover turns it Bright Teal #26DBC8. */
+      .svc-card .icon { display: inline-block; line-height: 0; color: var(--teal-deep); margin-bottom: 18px; transition: color .3s ease; }
+      .svc-card .icon svg { width: 38px; height: 38px; }
+      .svc-card:hover .icon { color: var(--teal-accent); }
       .svc-card h3 { font-size: 1.18rem; font-weight: 700; margin-bottom: 14px; }
       .svc-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
       .svc-list li { display: flex; gap: 10px; align-items: flex-start; font-size: .97rem; color: var(--ink-soft); line-height: 1.55; }
@@ -982,7 +987,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon icon--sky"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 8l9 5 9-5M12 13v8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3 8l9 5 9-5M12 13v8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
               <h3>২. Product Management System</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">প্রোডাক্ট ক্যাটালগ ও ক্যাটাগরি ম্যানেজমেন্ট</span></li>
@@ -995,7 +1000,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon icon--deep"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
               <h3>৩. Order &amp; Customer Management</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">অর্ডার ম্যানেজমেন্ট সিস্টেম</span></li>
@@ -1022,7 +1027,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon icon--sky"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8h11v9H3zM14 11h4l3 3v3h-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="17" r="2" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/></svg></div>
+              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8h11v9H3zM14 11h4l3 3v3h-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="17" r="2" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/></svg></div>
               <h3>৫. Courier &amp; Delivery Integration</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">SteadFast, Pathao ও RedX কুরিয়ার ইন্টিগ্রেশন</span></li>
@@ -1033,7 +1038,7 @@
               </ul>
             </article>
             <article class="svc-card reveal">
-              <div class="icon icon--deep"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
               <h3>৬. Automation &amp; Notification System</h3>
               <ul class="svc-list bn-text">
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span lang="bn">টেলিগ্রামে অর্ডার অ্যালার্ট ইন্টিগ্রেশন</span></li>
