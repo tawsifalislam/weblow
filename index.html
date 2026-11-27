@@ -787,12 +787,11 @@
          diagonal teal → white → teal, sampled from the image:
          #26DBC8 (top-left, the brand bright teal) → #BBF4EE →
          #F8FEFE (white centre) → #CFF8F4 → #5CE5D5 (bottom-right). */
-      /* Service cards are 100% GLASS (owner 2026-11-27 16:32): the teal
-         gradient fill is gone — a light frosted panel lets the page
-         background show through. Same glass recipe as the page frost
-         (body::before), slightly stronger white so the card still reads
-         as a panel. Icons/text stay Deep Teal on the light glass. */
-      .svc-card { background: rgba(255, 255, 255, 0.28); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow); position: relative; -webkit-tap-highlight-color: transparent; }
+      /* Service cards — BACK to the teal gradient (owner 2026-11-27 16:53:
+         the glass change was a mistake, I was never asked to change these;
+         the old colour was much more beautiful). The v47 glass rule is
+         reverted exactly to the v38 fill. */
+      .svc-card { background: linear-gradient(135deg, #26DBC8 0%, #BBF4EE 25%, #F8FEFE 50%, #CFF8F4 75%, #5CE5D5 100%); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow); position: relative; -webkit-tap-highlight-color: transparent; }
       /* The reveal sets a 2s transition (opacity + transform); this keeps
          that for the entrance while giving the hover lift a fast .3s. */
       html.js .svc-card.reveal, html.js .svc-card.reveal.in {
@@ -976,9 +975,14 @@
       /* Pricing */
       .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
       @media (max-width: 900px) { .price-grid { grid-template-columns: 1fr; } }
-      .price-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 28px; display: flex; flex-direction: column; box-shadow: var(--shadow); }
-      .price-card.featured { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
-      .price-card--black { background: linear-gradient(160deg, var(--black-card-2), var(--black-card)); color: #fff; border-color: var(--black-card); }
+      /* Pricing cards are GLASS (owner 2026-11-27 16:52 — the cards BELOW
+         pricing, not the service cards): the white card is light frosted
+         glass so the page background shows through; the two dark cards
+         are dark glass so their white text stays readable and they keep
+         standing out. */
+      .price-card { background: rgba(255, 255, 255, 0.28); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius); padding: 30px 28px; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+      .price-card.featured { background: rgba(0, 57, 58, 0.62); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
+      .price-card--black { background: rgba(16, 24, 32, 0.62); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
       .price-card.price-card--black .plan-note { color: var(--hero-soft); }
       .price-card--black ul svg { color: var(--teal-accent); }
       .price-card--black .btn-outline { background: transparent; border-color: rgba(255, 255, 255, .4); color: #fff; }
