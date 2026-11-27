@@ -774,12 +774,27 @@
       /* 4 — Card (Payment): a swipe — slides right and tilts, then back. */
       .anim-card svg { animation: svc-card-swipe 2.2s ease-in-out infinite; }
       @keyframes svc-card-swipe { 0%, 100% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(8px) rotate(-4deg); } }
-      /* 5 — Truck (Courier & Delivery): drives forward with a little bob,
-         wheels spinning. The spoke line inside each wheel makes the spin visible. */
-      .anim-truck svg { animation: svc-truck-drive 1.8s ease-in-out infinite; }
-      .anim-truck .wheel { transform-origin: center; animation: svc-wheel-spin .8s linear infinite; }
-      @keyframes svc-truck-drive { 0%, 100% { transform: translateX(0) translateY(0); } 25% { transform: translateX(5px) translateY(-1px); } 50% { transform: translateX(10px) translateY(0); } 75% { transform: translateX(5px) translateY(-1px); } }
-      @keyframes svc-wheel-spin { to { transform: rotate(360deg); } }
+      /* 5 — Truck (Courier & Delivery): drives from the LEFT edge of the
+         card to the RIGHT edge, STOPS there, fades out, then drives again.
+         The icon is absolute inside the card (which is position: relative),
+         so `left` percentages span the card width on any screen; the card
+         gets extra top padding to reserve the icon's space. The spoke line
+         inside each wheel makes the spin visible; wheels spin only while
+         the truck is driving (same 3.2s timeline). */
+      .svc-card--truck { padding-top: 84px; }
+      .anim-truck { position: absolute; top: 28px; left: 26px; margin-bottom: 0; animation: svc-truck-across 3.2s ease-in-out infinite; }
+      .anim-truck svg { animation: svc-truck-bob .45s ease-in-out infinite alternate; }
+      .anim-truck .wheel { transform-origin: center; animation: svc-wheel-drive 3.2s linear infinite; }
+      @keyframes svc-truck-across {
+        0% { left: 26px; opacity: 1; }
+        55% { left: calc(100% - 64px); opacity: 1; }
+        72% { left: calc(100% - 64px); opacity: 1; }
+        84% { left: calc(100% - 64px); opacity: 0; }
+        85% { left: 26px; opacity: 0; }
+        100% { left: 26px; opacity: 1; }
+      }
+      @keyframes svc-truck-bob { from { transform: translateY(0); } to { transform: translateY(-1.5px); } }
+      @keyframes svc-wheel-drive { 0% { transform: rotate(0deg); } 55% { transform: rotate(720deg); } 100% { transform: rotate(720deg); } }
       /* 6 — Bell (Automation & Notification): rings — the bell swings with
          a decaying swing, the clapper swings the other way, sound waves pulse. */
       .anim-bell .bell-body { transform-origin: 50% 0; animation: svc-bell-ring 2.4s ease-in-out infinite; }
@@ -1067,7 +1082,7 @@
                 <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Coupon, Discount &amp; Promotional Campaign Management</span></li>
               </ul>
             </article>
-            <article class="svc-card reveal">
+            <article class="svc-card svc-card--truck reveal">
               <div class="icon anim-truck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8h11v9H3zM14 11h4l3 3v3h-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><g class="wheel"><circle cx="7" cy="17" r="2" stroke="currentColor" stroke-width="2"/><path d="M7 15v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g><g class="wheel"><circle cx="17.5" cy="17" r="2" stroke="currentColor" stroke-width="2"/><path d="M17.5 15v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg></div>
               <h3>৫. Courier &amp; Delivery Integration</h3>
               <ul class="svc-list bn-text">
