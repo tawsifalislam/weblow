@@ -975,25 +975,30 @@
       /* Pricing */
       .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
       @media (max-width: 900px) { .price-grid { grid-template-columns: 1fr; } }
-      /* Pricing cards are GLASS (owner 2026-11-27 16:52 — the cards BELOW
-         pricing, not the service cards): the white card is light frosted
-         glass so the page background shows through; the two dark cards
-         are dark glass so their white text stays readable and they keep
-         standing out. */
-      .price-card { background: rgba(255, 255, 255, 0.28); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius); padding: 30px 28px; display: flex; flex-direction: column; box-shadow: var(--shadow); }
-      .price-card.featured { background: rgba(0, 57, 58, 0.62); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
-      .price-card--black { background: rgba(16, 24, 32, 0.62); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
-      .price-card.price-card--black .plan-note { color: var(--hero-soft); }
-      .price-card--black ul svg { color: var(--teal-accent); }
-      .price-card--black .btn-outline { background: transparent; border-color: rgba(255, 255, 255, .4); color: #fff; }
-      .price-card--black .btn-outline:hover { border-color: var(--teal-accent); }
+      /* Pricing cards — ALL THREE bright teal glass, 100% glass (owner
+         2026-11-27 16:56): one shared frosted Bright Teal #26DBC8 fill, so
+         the page background shows through all three. The old dark fills
+         are gone, so the two dark cards' text, notes, ticks and buttons
+         switch to DARK — white text would vanish on the light teal glass. */
+      .price-card { background: rgba(38, 219, 200, 0.30); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: var(--radius); padding: 30px 28px; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+      .price-card.featured { background: rgba(38, 219, 200, 0.30); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); color: var(--ink); border: 1px solid rgba(255, 255, 255, 0.6); }
+      .price-card--black { background: rgba(38, 219, 200, 0.30); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); color: var(--ink); border: 1px solid rgba(255, 255, 255, 0.6); }
+      .price-card.price-card--black .plan-note { color: var(--ink-soft); }
+      .price-card--black ul svg { color: var(--teal-deep); }
+      .price-card--black .btn-outline { background: var(--card); border-color: var(--line); color: var(--ink); }
+      .price-card--black .btn-outline:hover { border-color: var(--teal-accent-dark); }
       .price-card .plan { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 1.05rem; }
       .price-card .plan-note { color: var(--ink-soft); font-size: .92rem; margin-top: 4px; }
-      .price-card.featured .plan-note { color: var(--hero-soft); }
+      .price-card.featured .plan-note { color: var(--ink-soft); }
+      /* The featured card's bright-teal button would vanish into the teal
+         glass, so it becomes a WHITE button with deep-teal text (hover:
+         deep teal with white text). */
+      .price-card.featured .btn-accent { background: #fff; color: var(--teal-deep); }
+      .price-card.featured .btn-accent:hover { background: var(--teal-deep); color: #fff; }
       .price-card ul { list-style: none; padding: 0; margin: 18px 0 26px; display: grid; gap: 11px; font-size: .96rem; }
       .price-card ul li { display: flex; gap: 10px; align-items: flex-start; }
       .price-card ul svg { flex: none; margin-top: 3px; color: var(--teal-accent-dark); }
-      .price-card.featured ul svg { color: var(--teal-accent); }
+      .price-card.featured ul svg { color: var(--teal-deep); }
       .price-card .btn { margin-top: auto; }
       /* The one price line on the whole site, directly under the pricing heading */
       .price-once { font-weight: 700; font-size: clamp(1.3rem, 3vw, 1.6rem); color: var(--teal-accent-dark); }
